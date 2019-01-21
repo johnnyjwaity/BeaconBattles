@@ -5,6 +5,9 @@ class Client {
     socket.messageLength = 0;
     socket.readBytes = null;
     socket.unaccountedBytes = [];
+    socket.on("error", function(err) {
+      console.log(err);
+    });
     socket.on("close", function(data) {
       console.log("Disconnected");
     });
@@ -12,11 +15,13 @@ class Client {
     socket.on("data", function(data) {
       // console.log("Recieved Data of Length: " + data.length);
       socket.unaccountedBytes.push(...data);
-      classRef.readMessage();
+      // classRef.readMessage();
       if (!socket.isReading) {
       }
     });
-
+    setInterval(function() {
+      classRef.readMessage();
+    }, 1.0 / 60.0);
     this.messageCallback = null;
     this.socket = socket;
   }
@@ -32,10 +37,13 @@ class Client {
     while (strLength.length < 4) {
       strLength = "0" + strLength;
     }
-    this.socket.write(strLength, "ascii");
-    this.socket.write(buffer);
+    var totalMes = strLength + buffer.toString("ascii");
+    this.socket.write(totalMes, "ascii");
   }
   readMessage() {
+    if (this.socket.unaccountedBytes.length == 0) {
+      return;
+    }
     //   console.log("Bytes Remaining: " + socket.unaccountedBytes.length);
     if (!this.socket.isReading) {
       this.socket.isReading = true;
@@ -72,6 +80,9 @@ class Client {
         this.socket.isReading = false;
         break;
       }
+    }
+    if (this.socket.unaccountedBytes.length != 0) {
+      this.readMessage();
     }
   }
   disconnect() {}

@@ -12,6 +12,7 @@ public class NetData {
     public string key;
     public string value;
     public int id;
+    public string[] other;
     public string Serialize()
     {
         return JsonConvert.SerializeObject(this);

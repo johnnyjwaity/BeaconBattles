@@ -16,10 +16,12 @@ public class GameObjectData {
             Debug.Log(data.n);
             return;
         }
+        //update position and rotation
         obj.transform.position = data.p.toVector3();
         obj.transform.rotation = data.r.toQuaternion();
         foreach(GameObjectData child in data.c)
         {
+            //update children of the gameobject recursively
             updateGameObject(child, obj.transform.GetChild(child.n).gameObject);
         }
     }

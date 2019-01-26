@@ -14,6 +14,7 @@ public class LobbyManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        //clear all podiums and and set text to Not connected
 		foreach(GameObject obj in podiums)
         {
             for(int i = 0; i < obj.transform.childCount; i++)
@@ -29,6 +30,7 @@ public class LobbyManager : MonoBehaviour {
 	void Update () {
 		
 	}
+    //update players when new player is added to lobby
     public void UpdatePlayers(string[] names)
     {
         foreach (GameObject obj in podiums)
@@ -53,6 +55,7 @@ public class LobbyManager : MonoBehaviour {
             counter++;
         }
     }
+    //Activates when start game is cliekd
     public void requestStart()
     {
         Multiplayer m = FindObjectOfType<Multiplayer>();

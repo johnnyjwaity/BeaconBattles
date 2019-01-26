@@ -52,10 +52,14 @@ public class Multiplayer : MonoBehaviour {
 
     public void Connect()
     {
+        //connect to server
         connect = false;
         client = new TcpClient();
         //client.Connect("10.0.0.4", 666);
-        client.Connect("24.15.247.118", 666);
+        //client.Connect("24.15.247.118", 666);
+        IPAddress address = Dns.GetHostEntry("bb.johnnywaity.com").AddressList[0];
+        IPEndPoint point = new IPEndPoint(address, 666);
+        client.Connect(point);
         Thread reciveThread = new Thread(recieve);
         reciveThread.IsBackground = true;
         reciveThread.Start();

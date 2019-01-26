@@ -13,6 +13,7 @@ public class CameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        //move camera behind the player
         transform.position = cameraPoint.transform.position;
         transform.rotation = cameraPoint.transform.rotation;
 	}

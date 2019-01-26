@@ -21,10 +21,16 @@ public class Alert : MonoBehaviour {
 	void Update () {
 		
 	}
+    /*
+     * Function Changes the Message of the alert
+     */
     public void ConfigureQuestion(string question)
     {
         this.question.text = question;
     }
+    /*
+     * Determines if Alert Should have an input
+     */
     public void ShowInput(bool enabled)
     {
         input.gameObject.SetActive(enabled);
@@ -34,6 +40,9 @@ public class Alert : MonoBehaviour {
         this.alertDelegate = alertDelegate;
         Debug.Log("setting active");
     }
+    /*
+     * What to do when Alert Ok button is clicked
+     */
     public void EnterButtonClicked()
     {
         if(alertDelegate != null)

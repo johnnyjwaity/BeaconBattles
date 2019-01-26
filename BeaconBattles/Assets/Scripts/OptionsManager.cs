@@ -56,6 +56,7 @@ public class OptionsManager : MonoBehaviour {
         musicSlider.value = PlayerPrefs.GetFloat("music_volume");
         soundSlider.value = PlayerPrefs.GetFloat("sound_volume");
         muteToggle.isOn = (PlayerPrefs.GetInt("mute") == 0) ? false : true;
+        gameObject.SetActive(false);
     }
 	
 	// Update is called once per frame

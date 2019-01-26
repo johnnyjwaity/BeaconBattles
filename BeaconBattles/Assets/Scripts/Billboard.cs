@@ -13,6 +13,7 @@ public class Billboard : MonoBehaviour
 
     void Update()
     {
+        //look at the camera so the text is always aligned
         transform.LookAt(transform.position + m_Camera.transform.rotation * Vector3.forward,
                          m_Camera.transform.rotation * Vector3.up);
     }

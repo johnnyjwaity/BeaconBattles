@@ -17,11 +17,13 @@ public class BeaconManager : MonoBehaviour {
 	}
     public void DestoryBeacon(int id)
     {
+        //Destory Becaon object
         Debug.Log("Destorying");
         beacons[id].SetActive(false);
     }
     public bool IsBeaconAlive(string color)
     {
+        //check for alive beacons
         if (beacons[ColorToIndex(color)].activeSelf)
         {
             return true;
@@ -30,6 +32,7 @@ public class BeaconManager : MonoBehaviour {
     }
     public bool IsBeaconAlive(int color)
     {
+        //check if beacon is active
         if (beacons[color].activeSelf)
         {
             return true;
@@ -38,6 +41,7 @@ public class BeaconManager : MonoBehaviour {
     }
     public int GetBeaconCount()
     {
+        //amount of beacons alive is returned
         int amount = 0;
         foreach(GameObject beacon in beacons)
         {
@@ -48,6 +52,7 @@ public class BeaconManager : MonoBehaviour {
         }
         return amount;
     }
+    //check to see if there is one becon left
     public int GetWinningBeacon()
     {
         if(GetBeaconCount() == 1)

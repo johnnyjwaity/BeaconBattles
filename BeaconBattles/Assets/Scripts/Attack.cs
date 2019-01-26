@@ -40,6 +40,7 @@ public class Attack : MonoBehaviour {
         }
         if (running)
         {
+            //Attack cooldowns
             durationCounter -= Time.deltaTime;
             if(durationCounter < 0)
             {
@@ -51,6 +52,7 @@ public class Attack : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
+        //Determine if hit enemy or hit beacon
         if(other.tag == "Enemy")
         {
             Debug.Log("Hit Enemy");

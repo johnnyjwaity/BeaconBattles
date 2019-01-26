@@ -23,6 +23,7 @@ public class MainMenu : MonoBehaviour, AlertDelegate {
 
         
     }
+    //Create game button cliked
     public void CreateGame()
     {
         GameObject alertCanvas = Instantiate(alertPrefab);
@@ -32,6 +33,7 @@ public class MainMenu : MonoBehaviour, AlertDelegate {
         alert.Display(this);
         alertType = 1;
     }
+    //Join game button clicked
     public void JoinGame()
     {
         GameObject alertCanvas = Instantiate(alertPrefab);
@@ -41,7 +43,7 @@ public class MainMenu : MonoBehaviour, AlertDelegate {
         alert.Display(this);
         alertType = 2;
     }
-
+    //Send confiramtion alert
     public void OnConfiramtion(Alert alert)
     {
         if(alertType == 1)

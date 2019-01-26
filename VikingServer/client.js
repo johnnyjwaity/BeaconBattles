@@ -5,11 +5,16 @@ class Client {
     socket.messageLength = 0;
     socket.readBytes = null;
     socket.unaccountedBytes = [];
+    this.onDisconnect = null;
+    var classRef = this;
     socket.on("error", function(err) {
-      console.log(err);
+      // console.log(err);
     });
     socket.on("close", function(data) {
       console.log("Disconnected");
+      if (classRef.onDisconnect != null) {
+        classRef.onDisconnect();
+      }
     });
     var classRef = this;
     socket.on("data", function(data) {

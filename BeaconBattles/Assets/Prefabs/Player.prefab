@@ -2129,6 +2129,7 @@ MonoBehaviour:
   walkSpeed: 20
   runSpeed: 40
   jumpStrength: 1700
+  maxHealth: 200
   spawnPoints:
   - {fileID: 0}
   - {fileID: 0}
@@ -2136,10 +2137,15 @@ MonoBehaviour:
   - {fileID: 0}
   yMin: -62.7
   rotateSensitivity: 3
-  beacon: {fileID: 0}
   attacks:
   - {fileID: 114431415926377768}
   - {fileID: 114208464888888858}
+  healthBar: {fileID: 0}
+  respawnTime: 3
+  respawnScreen: {fileID: 0}
+  respawnText: {fileID: 0}
+  winScreen: {fileID: 0}
+  winText: {fileID: 0}
 --- !u!135 &135436301520134352
 SphereCollider:
   m_ObjectHideFlags: 1

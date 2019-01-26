@@ -57,7 +57,11 @@ public class Attack : MonoBehaviour {
             NetData n = new NetData("damage", "" + damage);
             n.id = other.GetComponent<NetObject>().id;
             n.key = "" + player.GetComponent<NetObject>().id;
-            Debug.Log(n.key);
+            multi.sendData(JsonConvert.SerializeObject(n));
+        }else if(other.tag == "Beacon")
+        {
+            NetData n = new NetData("damage_beacon", other.gameObject.name.Split(' ')[0].ToLower());
+            n.id = damage;
             multi.sendData(JsonConvert.SerializeObject(n));
         }
     }

@@ -328,7 +328,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Alert.cs" />
+    <Compile Include="Assets\Scripts\AlertDelegate.cs" />
     <Compile Include="Assets\Scripts\Attack.cs" />
+    <Compile Include="Assets\Scripts\BeaconManager.cs" />
+    <Compile Include="Assets\Scripts\Billboard.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\CameraOrbit.cs" />
     <Compile Include="Assets\Scripts\GameObjectData.cs" />
@@ -338,9 +342,11 @@
     <Compile Include="Assets\Scripts\NetData.cs" />
     <Compile Include="Assets\Scripts\NetObject.cs" />
     <Compile Include="Assets\Scripts\OptionsManager.cs" />
+    <Compile Include="Assets\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Rotate.cs" />
     <Compile Include="Assets\Scripts\Serialize.cs" />
+    <Compile Include="Assets\Scripts\StatSave.cs" />
     <Compile Include="Assets\Scripts\VectorData.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />

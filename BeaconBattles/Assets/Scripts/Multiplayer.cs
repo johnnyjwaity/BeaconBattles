@@ -9,6 +9,8 @@ using System.Text;
 using UnityEngine;
 using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
+using TMPro;
+using UnityEngine.UI;
 
 public class Multiplayer : MonoBehaviour {
 
@@ -17,10 +19,6 @@ public class Multiplayer : MonoBehaviour {
     public bool inLobby = false;
     public bool gameStarted = false;
     public bool connected = false;
-    public string playerName;
-    public bool createLobby = false;
-    public int lobbyCode;
-    public bool joinLobby = false;
     private TcpClient client = null;
     public List<GameObject> syncQueue;
     private List<GameObject> waitlist;
@@ -32,7 +30,9 @@ public class Multiplayer : MonoBehaviour {
     public List<string> objectNames;
     public GameObject[] objects;
     private float timeCounter = 1 / 60;
-    public int testId;
+    private string nameUsed;
+    public GameObject alertPrefab;
+    
 
 	// Use this for initialization
 	void Start () {
@@ -47,22 +47,52 @@ public class Multiplayer : MonoBehaviour {
         //GameObjectData d = JsonConvert.DeserializeObject<GameObjectData>(Serialize.sg(sync[0]));
         //GameObjectData.updateGameObject(d, update);
         //printChildren(d);
+        Connect();
+    }
+
+    public void Connect()
+    {
+        connect = false;
+        client = new TcpClient();
+        //client.Connect("10.0.0.4", 666);
+        client.Connect("24.15.247.118", 666);
+        Thread reciveThread = new Thread(recieve);
+        reciveThread.IsBackground = true;
+        reciveThread.Start();
+        connected = true;
+    }
+    public void CreateGame(string playerName)
+    {
+        NetData n = new NetData("create_lobby", playerName);
+        Debug.Log("Multi :" + playerName);
+        nameUsed = playerName;
+        string data = JsonConvert.SerializeObject(n);
+        Debug.Log(data);
+        sendData(data);
+    }
+    public void JoinGame(string playerName, int code)
+    {
+        NetData n = new NetData("join_lobby", playerName);
+        n.id = code;
+        nameUsed = playerName;
+        sendData(JsonConvert.SerializeObject(n));
     }
 
     // Update is called once per frame
-    void Update() {
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            connect = true;
-        }
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            createLobby = true;
-        }
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            joinLobby = true;
-        }
+    void Update()
+    {
+        //if (Input.GetKeyDown(KeyCode.C))
+        //{
+        //    Connect();
+        //}
+        //if (Input.GetKeyDown(KeyCode.K))
+        //{
+        //    CreateGame("Test");
+        //}
+        //if (Input.GetKeyDown(KeyCode.J))
+        //{
+        //    JoinGame(playerName, lobbyCode);
+        //}
         if (inLobby)
         {
             if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("game"))
@@ -72,32 +102,14 @@ public class Multiplayer : MonoBehaviour {
                 sendData(JsonConvert.SerializeObject(n));
             }
         }
-        if (joinLobby)
+        if (!inLobby)
         {
-            joinLobby = false;
-            NetData n = new NetData("join_lobby", playerName);
-            n.id = lobbyCode;
-            sendData(JsonConvert.SerializeObject(n));
+            if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("lobby"))
+            {
+                inLobby = true;
+            }
         }
-        if (createLobby)
-        {
-            createLobby = false;
-            NetData n = new NetData("create_lobby", playerName);
-            sendData(JsonConvert.SerializeObject(n));
-        }
-        if (connect)
-        {
-            connect = false;
-            client = new TcpClient();
-            //client.Connect("10.0.0.4", 666);
-            client.Connect("24.15.247.118", 666);
-            Thread reciveThread = new Thread(recieve);
-            reciveThread.IsBackground = true;
-            reciveThread.Start();
-            connected = true;
-            
-            //sendData(Serialize.sg(sync[0]));
-        }
+        
         if (connected)
         {
             acceptedQueue.AddRange(queue);
@@ -117,11 +129,21 @@ public class Multiplayer : MonoBehaviour {
                         }
                         else
                         {
+                            Debug.Log(data.key);
                             GameObject g = Instantiate(objects[objectNames.IndexOf(data.key)]);
                             NetObject netObj = g.AddComponent<NetObject>();
                             netObj.id = data.id;
                             networkedObjects.Add(data.id, g);
                             GameObjectData.updateGameObject(gData, g);
+                            if (data.key == "player")
+                            {
+                                string p_name = data.other[0];
+                                if (p_name.EndsWith("?"))
+                                {
+                                    p_name = p_name.Substring(0, p_name.Length - 1);
+                                }
+                                g.transform.Find("Stats").GetChild(0).GetComponent<TextMeshProUGUI>().text = p_name;
+                            }
                         }
 
                         updatedObjects.Add(data.id);
@@ -139,10 +161,11 @@ public class Multiplayer : MonoBehaviour {
                 {
                     gameStarted = true;
                     Debug.Log("Game Started");
-                }else if(data.type == "animation")
+                }
+                else if (data.type == "animation")
                 {
                     Animator anim = networkedObjects[data.id].GetComponent<Animator>();
-                    if(data.key == "trigger")
+                    if (data.key == "trigger")
                     {
                         anim.SetTrigger(data.value);
                     }
@@ -150,17 +173,27 @@ public class Multiplayer : MonoBehaviour {
                     {
                         anim.SetBool(data.value, bool.Parse(data.key));
                     }
-                }else if(data.type == "update_roster")
+                }
+                else if (data.type == "update_roster")
                 {
+                    string combinedRoster = "";
+                    foreach (string n in data.other)
+                    {
+                        Debug.Log(n);
+                        combinedRoster += n + ";";
+                    }
+                    combinedRoster = combinedRoster.Substring(0, combinedRoster.Length - 1);
+                    PlayerPrefs.SetString("last_roster", combinedRoster);
+                    Debug.Log(combinedRoster);
                     LobbyManager m = FindObjectOfType<LobbyManager>();
-                    if(m != null)
+                    if (m != null)
                     {
                         m.UpdatePlayers(data.other);
                         int counter = 0;
                         foreach (string n in data.other)
                         {
                             Debug.Log(n);
-                            if (n == playerName)
+                            if (n == nameUsed)
                             {
                                 PlayerPrefs.SetInt("color", counter);
                                 Debug.Log("Found Name: " + counter);
@@ -169,47 +202,80 @@ public class Multiplayer : MonoBehaviour {
                             counter++;
                         }
                     }
-                    
-                    
-                }else if(data.type == "lobby_joined")
+                }
+                else if (data.type == "lobby_joined")
                 {
                     Debug.Log("Joined Lobby: " + data.id);
+                    PlayerPrefs.SetInt("joinedLobby", data.id);
                     inLobby = true;
-                }else if(data.type == "prepare_game")
+                    SceneManager.LoadScene("lobby");
+                }
+                else if (data.type == "prepare_game")
                 {
                     SceneManager.LoadScene("game");
-                }else if(data.type == "recieve_damage")
+                }
+                else if (data.type == "recieve_damage")
                 {
                     Debug.Log("Lost " + data.value + " health");
                     Vector3 enemyPosition = networkedObjects[int.Parse(data.key)].transform.position;
                     sync[data.id].GetComponent<PlayerController>().addKnockback(enemyPosition);
+                    sync[data.id].GetComponent<PlayerController>().Damage(int.Parse(data.value));
+                }
+                else if (data.type == "join_failed")
+                {
+                    GameObject alertCanvas = Instantiate(alertPrefab);
+                    Alert alert = alertCanvas.GetComponent<Alert>();
+                    alert.ShowInput(false);
+                    alert.ConfigureQuestion(data.key);
+                    alert.Display(null);
+                }
+                else if (data.type == "destroy_beacon")
+                {
+                    Debug.Log("recieved Destroy Message");
+                    BeaconManager manager = FindObjectOfType<BeaconManager>();
+                    if (manager != null)
+                    {
+                        manager.DestoryBeacon(data.id);
+                    }
                 }
             }
             acceptedQueue.Clear();
             if (gameStarted)
             {
                 timeCounter -= Time.deltaTime;
-                if(timeCounter < 0)
+                if (timeCounter < 0)
                 {
                     runGameSync();
                     timeCounter = 1 / 60;
                 }
-                
+
             }
         }
         if (disconnect)
         {
-            connected = false;
-            client.Close();
+            Disconnect();
         }
+
         
+    }
+    public void Disconnect()
+    {
+        connected = false;
+        client.Close();
+    }
+    public void ReturnToLobby()
+    {
+        gameStarted = false;
+        sync.Clear();
+        queue.Clear();
+        acceptedQueue.Clear();
+        networkedObjects.Clear();
+        updatedObjects.Clear();
+        SceneManager.LoadScene("lobby");
     }
     private void OnApplicationQuit()
     {
-        if (connected)
-        {
-            client.Close();
-        }
+        Disconnect();
     }
     private void runGameSync()
     {
@@ -220,6 +286,8 @@ public class Multiplayer : MonoBehaviour {
             NetData n = new NetData("object", JsonConvert.SerializeObject(d));
             n.key = "player";
             n.id = key;
+            n.other = new string[1];
+            n.other[0] = nameUsed;
             sendData(n.Serialize());
         }
         foreach (GameObject obj in syncQueue)
@@ -233,6 +301,7 @@ public class Multiplayer : MonoBehaviour {
     }
     public void sendData(string msg)
     {
+        //Debug.Log(msg);
         NetworkStream stream = client.GetStream();
         ASCIIEncoding encoder = new ASCIIEncoding();
         byte[] data = encoder.GetBytes(msg);

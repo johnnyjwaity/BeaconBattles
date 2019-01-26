@@ -9,6 +9,12 @@ class Lobby {
     this.addClient(leader);
     this.clientsReady = 0;
   }
+  endGame() {
+    for (var i = 0; i < this.clients.length; i++) {
+      this.setClientCallback(this.clients[i]);
+    }
+    this.game = null;
+  }
   addClient(client) {
     this.clients.push(client);
     client.sendMessage(
@@ -17,6 +23,18 @@ class Lobby {
         id: this.id
       })
     );
+    this.sendRoster();
+    this.setClientCallback(client);
+    var classRef = this;
+    client.onDisconnect = function() {
+      console.log("Disconnecting");
+      classRef.clients.splice(classRef.clients.indexOf(client), 1);
+      classRef.sendRoster();
+    };
+  }
+  sendRoster() {
+    console.log("sending Roster");
+    console.log(this.clients.length);
     var names = [];
     for (var i = 0; i < this.clients.length; i++) {
       names.push(this.clients[i].name);
@@ -26,8 +44,11 @@ class Lobby {
         type: "update_roster",
         other: names
       };
+      console.log(data);
       this.clients[i].sendMessage(JSON.stringify(data));
     }
+  }
+  setClientCallback(client) {
     var classRef = this;
     client.messageCallback = function(mes) {
       var data = JSON.parse(mes);
@@ -49,6 +70,7 @@ class Lobby {
           }
           var game = new Game(players);
           game.startGame();
+          game.lobby = classRef;
           classRef.game = game;
           classRef.clientsReady = 0;
         }

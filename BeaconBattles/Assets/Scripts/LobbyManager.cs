@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class LobbyManager : MonoBehaviour {
 
-    public Text[] labels;
+    public TextMeshProUGUI[] labels;
+    public TextMeshProUGUI lobbyCode;
     public GameObject[] podiums;
 
 	// Use this for initialization
@@ -18,6 +21,8 @@ public class LobbyManager : MonoBehaviour {
                 obj.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
+        UpdatePlayers(PlayerPrefs.GetString("last_roster").Split(';'));
+        lobbyCode.text = "Lobby Code: " + PlayerPrefs.GetInt("joinedLoby");
 	}
 	
 	// Update is called once per frame
@@ -33,7 +38,7 @@ public class LobbyManager : MonoBehaviour {
                 obj.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
-        foreach(Text t in labels)
+        foreach(TextMeshProUGUI t in labels)
         {
             t.text = "Not Connected";
         }
@@ -53,5 +58,12 @@ public class LobbyManager : MonoBehaviour {
         Multiplayer m = FindObjectOfType<Multiplayer>();
         NetData n = new NetData("request_start", "");
         m.sendData(JsonConvert.SerializeObject(n));
+    }
+    public void leaveGame()
+    {
+        Multiplayer m = FindObjectOfType<Multiplayer>();
+        m.Disconnect();
+        Destroy(m.gameObject);
+        SceneManager.LoadScene("Menu");
     }
 }

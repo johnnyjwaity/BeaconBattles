@@ -15,7 +15,13 @@ server.on("connection", function(socket) {
   clients.push(client);
   client.messageCallback = function(mes) {
     var netData = JSON.parse(mes);
+    if (netData.value.charAt(netData.value.length - 1) == "?") {
+      netData.value = netData.value.slice(0, -1);
+    }
     if (netData.type == "create_lobby") {
+      console.log("Creating Lobby");
+      console.log(mes);
+      console.log(netData);
       client.name = netData.value;
       var l = new Lobby(client, lobbys.length);
       lobbys.push(l);
@@ -23,6 +29,13 @@ server.on("connection", function(socket) {
       if (netData.id < lobbys.length) {
         client.name = netData.value;
         lobbys[netData.id].addClient(client);
+      } else {
+        client.sendMessage(
+          JSON.stringify({
+            type: "join_failed",
+            key: "Lobby Does Not Exist"
+          })
+        );
       }
     }
   };

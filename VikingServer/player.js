@@ -43,6 +43,10 @@ class Player {
           break;
         }
       }
+    } else if (netData.type == "damage_beacon") {
+      this.game.damageBeacon(netData.value, netData.id);
+    } else if (netData.type == "game_over") {
+      this.game.endGame();
     }
   }
   hasObject(obj) {

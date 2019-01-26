@@ -5,6 +5,7 @@ class Game {
     }
     this.objectCount = 0;
     this.players = players;
+    this.beaconHealth = [100, 100, 100, 100];
   }
   sendObject(obj, id) {
     // var objID = JSON.parse(obj).id;
@@ -24,6 +25,31 @@ class Game {
         JSON.stringify({ type: "game_start" })
       );
     }
+  }
+  damageBeacon(color, amount) {
+    var index = 0;
+    if (color == "red") {
+      index = 0;
+    } else if (color == "green") {
+      index = 1;
+    } else if (color == "yellow") {
+      index = 2;
+    } else if (color == "blue") {
+      index = 3;
+    }
+    console.log("Damaging Beacon " + color + "by " + amount);
+    this.beaconHealth[index] -= amount;
+    if (this.beaconHealth[index] <= 0) {
+      var netData = {
+        type: "destroy_beacon",
+        id: index,
+        value: color
+      };
+      this.sendObject(JSON.stringify(netData), -1);
+    }
+  }
+  endGame() {
+    this.lobby.endGame();
   }
 }
 module.exports = Game;

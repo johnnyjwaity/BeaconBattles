@@ -339,6 +339,7 @@
     <Compile Include="Assets\Scripts\LobbyManager.cs" />
     <Compile Include="Assets\Scripts\MainMenu.cs" />
     <Compile Include="Assets\Scripts\Multiplayer.cs" />
+    <Compile Include="Assets\Scripts\Music.cs" />
     <Compile Include="Assets\Scripts\NetData.cs" />
     <Compile Include="Assets\Scripts\NetObject.cs" />
     <Compile Include="Assets\Scripts\OptionsManager.cs" />
@@ -346,6 +347,7 @@
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Rotate.cs" />
     <Compile Include="Assets\Scripts\Serialize.cs" />
+    <Compile Include="Assets\Scripts\Sound.cs" />
     <Compile Include="Assets\Scripts\StatSave.cs" />
     <Compile Include="Assets\Scripts\VectorData.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />

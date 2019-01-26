@@ -41,9 +41,14 @@ public class PlayerController : MonoBehaviour {
     private float returnCounter;
     public TextMeshProUGUI returnText;
     private bool won = false;
+    private AudioSource sound;
+    private bool playedEndSound;
+    public AudioSource win;
+    public AudioSource lose;
 
     // Use this for initialization
     void Start () {
+        sound = GetComponent<AudioSource>();
         currentHealth = maxHealth;
         healthBar.value = 1;
         rb = GetComponent<Rigidbody>();
@@ -163,15 +168,19 @@ public class PlayerController : MonoBehaviour {
         }
         if (Input.GetMouseButtonDown(0))
         {
+            sound.Play();
             sendAnimation("attack", "trigger");
             anim.SetTrigger("attack");
             attacks[0].run();
+            
         }
         if (Input.GetMouseButtonDown(1))
         {
+            sound.Play();
             sendAnimation("stab", "trigger");
             anim.SetTrigger("stab");
             attacks[1].run();
+            
         }
         int winner = beaconManager.GetWinningBeacon();
         if(winner != -1)
@@ -196,12 +205,26 @@ public class PlayerController : MonoBehaviour {
                 {
                     text = "You Won";
                     won = true;
+                    if (!playedEndSound)
+                    {
+                        win.Play();
+                    }
+                    
                 }
                 if(gameObject.transform.position.y > -400)
                 {
                     text = "You Won";
                     won = true;
+                    if (!playedEndSound)
+                    {
+                        win.Play();
+                    }
                 }
+                if (!won && !playedEndSound)
+                {
+                    lose.Play();
+                }
+                playedEndSound = true;
                 winText.text = text;
                 winScreen.SetActive(true);
                 if (!isReturning)

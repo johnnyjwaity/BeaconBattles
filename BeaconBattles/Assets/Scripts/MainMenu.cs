@@ -13,12 +13,15 @@ public class MainMenu : MonoBehaviour, AlertDelegate {
     public TextMeshProUGUI wins;
     public TextMeshProUGUI deaths;
     public TextMeshProUGUI games;
+    
     private void Start()
     {
         StatSave stats = StatSave.Add(new StatSave(0, 0, 0));
         wins.text = "Wins: " + stats.winCount;
         deaths.text = "Deaths: " + stats.deathCount;
         games.text = "Games: " + stats.gamesCount;
+
+        
     }
     public void CreateGame()
     {

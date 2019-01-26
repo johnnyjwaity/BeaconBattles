@@ -9,12 +9,14 @@ class Lobby {
     this.addClient(leader);
     this.clientsReady = 0;
   }
+    //when the game ends, it sends all players back into the lobby
   endGame() {
     for (var i = 0; i < this.clients.length; i++) {
       this.setClientCallback(this.clients[i]);
     }
     this.game = null;
   }
+    //runs when a player is added to a lobby 
   addClient(client) {
     this.clients.push(client);
     client.sendMessage(
@@ -32,6 +34,7 @@ class Lobby {
       classRef.sendRoster();
     };
   }
+    //updates players in the lobby screen for everyone when someone joins or leaves the lobby
   sendRoster() {
     console.log("sending Roster");
     console.log(this.clients.length);
@@ -49,6 +52,7 @@ class Lobby {
     }
   }
   setClientCallback(client) {
+//clients read message from server to start game when start game button is clicked
     var classRef = this;
     client.messageCallback = function(mes) {
       var data = JSON.parse(mes);

@@ -30,7 +30,8 @@ class Client {
     this.messageCallback = null;
     this.socket = socket;
   }
-  sendMessage(msg) {
+    sendMessage(msg) {
+        //sends a message to server for the server to interpret and sync to all clients
     var buffer = Buffer.from(msg, "ascii");
     var length = buffer.length;
     var strLength = length.toString(16);
@@ -45,7 +46,8 @@ class Client {
     var totalMes = strLength + buffer.toString("ascii");
     this.socket.write(totalMes, "ascii");
   }
-  readMessage() {
+    readMessage() {
+        //interprets messages received from server
     if (this.socket.unaccountedBytes.length == 0) {
       return;
     }

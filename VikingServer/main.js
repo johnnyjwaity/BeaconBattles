@@ -18,7 +18,8 @@ server.on("connection", function(socket) {
     if (netData.value.charAt(netData.value.length - 1) == "?") {
       netData.value = netData.value.slice(0, -1);
     }
-    if (netData.type == "create_lobby") {
+      if (netData.type == "create_lobby") {
+          //creates a new lobby when create lobby button is pressed
       console.log("Creating Lobby");
       console.log(mes);
       console.log(netData);
@@ -26,10 +27,12 @@ server.on("connection", function(socket) {
       var l = new Lobby(client, lobbys.length);
       lobbys.push(l);
     } else if (netData.type == "join_lobby") {
-      if (netData.id < lobbys.length) {
+        if (netData.id < lobbys.length) {
+            //successfully joined lobby
         client.name = netData.value;
         lobbys[netData.id].addClient(client);
       } else {
+          //when and incorrect lobby code is entered in and the lobby doesnt exist
         client.sendMessage(
           JSON.stringify({
             type: "join_failed",
